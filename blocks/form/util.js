@@ -20,7 +20,19 @@ export function stripTags(input, allowd = allowedTags) {
     .replace(nbsp, '')
     .trim();
 }
-
+export function createCaptchaWrapper(fd, tagName = 'div') {
+  const fieldWrapper = document.createElement(tagName);
+  const nameStyle = fd.name ? ` field-${toClassName(fd.name)}` : '';
+  const renderType = getHTMLRenderType(fd);
+  const fieldId = `${renderType}-wrapper${nameStyle}`;
+  fieldWrapper.className = fieldId;
+  fieldWrapper.dataset.id = fd.id;
+  if (fd.visible === false) {
+    fieldWrapper.dataset.visible = fd.visible;
+  }
+  fieldWrapper.classList.add('field-wrapper');
+  return fieldWrapper;
+}
 /**
  * Sanitizes a string for use as class name.
  * @param {string} name The unsanitized string
