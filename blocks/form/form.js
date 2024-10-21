@@ -412,6 +412,13 @@ export async function createForm(formDef, data) {
   if (captchaField) {
     //const siteKey = captchaField?.properties?.['fd:captcha']?.config?.siteKey || captchaField?.value;
     const config = captchaField?.properties?.['fd:captcha']?.config;
+    if(!config){
+      config = {
+        'siteKey' : captchaField?.value,
+        'uri' : '',
+        'version' : '',
+      }
+    }
     const page_name = getSitePageName(captchaField?.properties?.['fd:path']);
     captcha = new GoogleReCaptcha(config,captchaField.id, captchaField.name, page_name);
     captcha.loadCaptcha(form);
