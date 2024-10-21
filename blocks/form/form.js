@@ -411,7 +411,7 @@ export async function createForm(formDef, data) {
   let captcha;
   if (captchaField) {
     //const siteKey = captchaField?.properties?.['fd:captcha']?.config?.siteKey || captchaField?.value;
-    const config = captchaField?.properties?.['fd:captcha']?.config;
+    let config = captchaField?.properties?.['fd:captcha']?.config;
     if(!config){
       config = {
         'siteKey' : captchaField?.value,
