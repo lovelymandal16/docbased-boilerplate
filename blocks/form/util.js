@@ -33,7 +33,7 @@ export function createCaptchaWrapper(fd, tagName = 'div') {
   fieldWrapper.classList.add('field-wrapper');
   return fieldWrapper;
 }
-function getSitePageName(path) {
+export function getSitePageName(path) {
   if(path == null) return "";
   const index = path.lastIndexOf('/jcr:content');
   if (index === -1) {
