@@ -5,7 +5,6 @@ import {
   stripTags,
   checkValidation,
   toClassName,
-  createCaptchaWrapper,
 } from './util.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
@@ -338,7 +337,7 @@ function renderField(fd) {
     field.append(createHelpText(fd));
     field.dataset.description = fd.description; // In case overriden by error message
   }
-  if (fd.fieldType !== 'radio-group' && fd.fieldType !== 'checkbox-group' && fd.fieldType !== 'captcha') {
+  if (fd.fieldType !== 'radio-group' && fd.fieldType !== 'checkbox-group') {
     inputDecorator(fd, field);
   }
   return field;
@@ -351,8 +350,6 @@ export async function generateFormRendition(panel, container, getItems = (p) => 
     const { fieldType } = field;
     if (fieldType === 'captcha') {
       captchaField = field;
-      const element = createCaptchaWrapper(field);
-      return element;
     } else {
       const element = renderField(field);
       if (field.appliedCssClassNames) {
@@ -372,17 +369,6 @@ export async function generateFormRendition(panel, container, getItems = (p) => 
   const children = await Promise.all(promises);
   container.append(...children.filter((_) => _ != null));
   await componentDecorator(container, panel);
-}
-
-function getSitePageName(path) {
- if (path == null) return '';
-  const index = path.lastIndexOf('/jcr:content');
-  if (index === -1) {
-    return '';
-  }
-  const mpath = path.substring(0, index);
-  const pathArray = mpath.split('/');
-  return pathArray[pathArray.length - 1].replaceAll('-', '_');
 }
 
 function enableValidation(form) {
@@ -420,9 +406,8 @@ export async function createForm(formDef, data) {
 
   let captcha;
   if (captchaField) {
-    const config = captchaField?.properties?.['fd:captcha']?.config;
-    const pageName = getSitePageName(captchaField?.properties?.['fd:path']);
-    captcha = new GoogleReCaptcha(config, captchaField.id, captchaField.name, pageName);
+    const siteKey = captchaField?.properties?.['fd:captcha']?.config?.siteKey || captchaField?.value;
+    captcha = new GoogleReCaptcha(siteKey, captchaField.id);
     captcha.loadCaptcha(form);
   }
 
